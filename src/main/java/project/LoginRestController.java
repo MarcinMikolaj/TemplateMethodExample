@@ -1,5 +1,8 @@
 package project;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +23,13 @@ public class LoginRestController {
 	}
 	
 	@RequestMapping(path = "/authenticate", method = RequestMethod.POST)
-	public ResponseEntity<String> handleAuthirizationRequest(@RequestBody LoginRequestPayload loginRequestPayload){
+	public ResponseEntity<String> handleAuthirizationRequest(@RequestBody LoginRequestPayload loginRequestPayload, HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse){
 		
-		authenticationProcessBuilder.process(loginRequestPayload);
-	
-		return new ResponseEntity<String>("", HttpStatus.OK);
+		if(authenticationProcessBuilder.process(loginRequestPayload, httpServletRequest, httpServletResponse))
+			return new ResponseEntity<String>("OK", HttpStatus.OK);
+		
+		return new ResponseEntity<String>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
 		
 	}
 
